@@ -6,6 +6,10 @@ on:
     # Run every 30 days at 00:00 UTC to keep the repository active
     - cron: '0 0 */30 * *'
 
+concurrency:
+  group: keep-alive
+  cancel-in-progress: false
+
 jobs:
   keep-alive:
     runs-on: ubuntu-latest
@@ -32,5 +36,7 @@ jobs:
             echo "No changes to commit"
           else
             git commit -m "chore: update keep-alive timestamp [skip ci]"
-            git push
+            git fetch origin main
+            git rebase origin/main
+            git push origin HEAD:main
           fi
